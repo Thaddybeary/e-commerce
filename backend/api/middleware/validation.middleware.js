@@ -36,7 +36,7 @@ const validateLogin = [
     .isEmail()
     .normalizeEmail()
     .withMessage("Please provide a valid email"),
-  body("password").notEmpty().withMessage("Refresh token is required"),
+  body("password").notEmpty().withMessage("Password is required"),
   handleValidationErrors,
 ];
 

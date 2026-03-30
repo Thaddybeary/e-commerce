@@ -15,7 +15,7 @@ router.get("/profile", authenticate, authController.getProfile);
 router.put("/profile", authenticate, authController.updateProfile);
 
 //admin only route example
-router.get('/admin', authenticate, authorize('admin'), (req, res) => {
+router.get('/admin', authenticate, authorise('admin'), (req, res) => {
   res.json({
     success: true,
     message: 'Welcome to admin area!',

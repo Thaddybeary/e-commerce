@@ -16,7 +16,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     address: {
-      type: String,
+      street: { type: String },
+      city: { type: String },
+      state: { type: String },
+      postalCode: { type: String },
+      country: { type: String },
     },
     phone: {
       type: String,
@@ -32,7 +36,7 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    isverified: {
+    isVerified: {
       type: Boolean,
       default: false,
     },
@@ -68,10 +72,10 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Add refresh token
+// Add refresh token (keep max 5)
 userSchema.methods.addRefreshToken = function (token) {
   this.refreshTokens.push({ token });
-  if (this.refreshTokens > 5) {
+  if (this.refreshTokens.length > 5) {
     this.refreshTokens = this.refreshTokens.slice(-5);
   }
   return this.save();

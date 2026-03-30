@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../users/user.controller');
 const { authenticate, authorise } = require('../middleware/auth.middleware');
-const { validateUpdateUser } = require('../middleware/auth.middleware');
+const { validateUpdateUser } = require('../middleware/validation.middleware');
 
 // All user routes require authentication
 router.use(authenticate);
@@ -15,7 +15,7 @@ router.get('/me', (req, res) => {
       user: {
         id: req.user._id,
         email: req.user.email,
-        name: req.user.name,
+        name: req.user.username,
         role: req.user.role,
         isVerified: req.user.isVerified,
         createdAt: req.user.createdAt
@@ -24,7 +24,10 @@ router.get('/me', (req, res) => {
   });
 });
 
-router.put('/me', userController.updateUser);
+router.put('/me', (req, res, next) => {
+  req.params.id = req.user._id.toString();
+  next();
+}, validateUpdateUser, userController.updateUser);
 
 // Admin-only routes
 router.get('/stats', authorise('admin'), userController.getUserStats);

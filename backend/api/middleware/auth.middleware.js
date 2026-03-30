@@ -5,7 +5,7 @@ const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorisation;
 
-    if (!authHeader || !authHeader.startswith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "Access Token Required",
@@ -49,7 +49,7 @@ const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorisation;
 
-    if (authHeader && authHeader.startswith("Bearer ")) {
+    if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.split(" ")[1];
       const decoded = verifyAccessToken(token);
       const user = await User.findById(decoded.userId).select("-refreshTokens");

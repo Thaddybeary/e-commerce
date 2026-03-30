@@ -9,7 +9,7 @@ const userController = {
       const query = {};
       if (search) {
         query.$or = [
-          { name: { $regex: search, $options: 'i' } },
+          { username: { $regex: search, $options: 'i' } },
           { email: { $regex: search, $options: 'i' } }
         ];
       }
@@ -83,7 +83,7 @@ const userController = {
         });
       }
 
-      const updateData = { name };
+      const updateData = { username: name };
       
       // Only allow email update if not changing to existing email
       if (email && email !== req.user.email) {

@@ -11,14 +11,14 @@ const authController = {
       const { email, password, name } = req.body;
 
       const existingUser = await User.findOne({ email });
-      if (exisitingUser) {
+      if (existingUser) {
         return res.status(409).json({
           success: false,
           message: "User with email already exists",
         });
       }
 
-      const user = new User({ email, password, name });
+      const user = new User({ email, password, username: name });
       await user.save();
 
       const accessToken = generateAccessToken({ userId: user._id });
@@ -33,7 +33,7 @@ const authController = {
           user: {
             id: user._id,
             email: user.email,
-            name: user.name,
+            name: user.username,
             role: user.role,
           },
           tokens: {
@@ -83,7 +83,7 @@ const authController = {
           user: {
             id: user._id,
             email: user.email,
-            name: user.name,
+            name: user.username,
             role: user.role,
           },
           tokens: {
@@ -115,7 +115,7 @@ const authController = {
         });
       }
 
-      await user.removeRefreshToken(refreshToken);
+      await user.removeRefreshTokens(refreshToken);
 
       const newAccessToken = generateAccessToken({ userId: user._id });
       const newRefreshToken = generateRefreshToken({ userId: user._id });
@@ -144,7 +144,7 @@ const authController = {
       const user = await User.findById(req.user._id);
 
       if (refreshToken) {
-        await user.removeRefreshToken(refreshToken);
+        await user.removeRefreshTokens(refreshToken);
       }
 
       res.json({
@@ -168,7 +168,7 @@ const authController = {
           user: {
             id: req.user._id,
             email: req.user.email,
-            name: req.user.name,
+            name: req.user.username,
             role: req.user.role,
             isVerified: req.user.isVerified,
           },
@@ -188,7 +188,7 @@ const authController = {
       const { name } = req.body;
       const user = await User.findByIdAndUpdate(
         req.user._id,
-        { name },
+        { username: name },
         { new: true, runValidators: true }
       ).select("-refreshTokens");
 
