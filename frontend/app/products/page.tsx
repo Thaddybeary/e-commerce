@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { useEffect, useState, useCallback } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ProductCard } from "@/components/product-card";
-import { productsAPI, type Product } from "@/lib/api";
+import { useEffect, useState, useCallback } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
+import { Search, SlidersHorizontal, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ProductCard } from "@/components/product-card"
+import { productsAPI, type Product } from "@/lib/api"
 
 const CATEGORIES = [
   "Protein Powder",
@@ -18,74 +18,78 @@ const CATEGORIES = [
   "Bars & Snacks",
   "Apparel & Accessories",
   "Equipment",
-];
+]
 
 const SORT_OPTIONS = [
   { label: "Newest", value: "-createdAt" },
   { label: "Price: Low to High", value: "price" },
   { label: "Price: High to Low", value: "-price" },
   { label: "Best Rated", value: "-rating" },
-];
+]
 
 export default function ProductsPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [totalProducts, setTotalProducts] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Filter state
-  const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [category, setCategory] = useState(searchParams.get("category") ?? "");
-  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "");
-  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "");
-  const [sort, setSort] = useState(searchParams.get("sort") ?? "-createdAt");
-  const [featured, setFeatured] = useState(searchParams.get("featured") ?? "");
+  const [search, setSearch] = useState(searchParams.get("search") ?? "")
+  const [category, setCategory] = useState(searchParams.get("category") ?? "")
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "")
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "")
+  const [sort, setSort] = useState(searchParams.get("sort") ?? "-createdAt")
+  const [featured, setFeatured] = useState(searchParams.get("featured") ?? "")
 
   const fetchProducts = useCallback(
     async (page = 1) => {
-      setLoading(true);
-      const params: Record<string, string> = { page: String(page), limit: "12", sort };
-      if (search) params.search = search;
-      if (category) params.category = category;
-      if (minPrice) params.minPrice = minPrice;
-      if (maxPrice) params.maxPrice = maxPrice;
-      if (featured) params.featured = featured;
+      setLoading(true)
+      const params: Record<string, string> = {
+        page: String(page),
+        limit: "12",
+        sort,
+      }
+      if (search) params.search = search
+      if (category) params.category = category
+      if (minPrice) params.minPrice = minPrice
+      if (maxPrice) params.maxPrice = maxPrice
+      if (featured) params.featured = featured
 
       try {
-        const res = await productsAPI.getAll(params);
-        setProducts(res.data.products);
-        setTotalProducts(res.data.pagination.totalProducts);
-        setTotalPages(res.data.pagination.total);
-        setCurrentPage(page);
+        const res = await productsAPI.getAll(params)
+        setProducts(res.data.products)
+        setTotalProducts(res.data.pagination.totalProducts)
+        setTotalPages(res.data.pagination.total)
+        setCurrentPage(page)
       } catch {
-        setProducts([]);
+        setProducts([])
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
     [search, category, minPrice, maxPrice, sort, featured]
-  );
+  )
 
   useEffect(() => {
-    fetchProducts(1);
-  }, [fetchProducts]);
+    fetchProducts(1)
+  }, [fetchProducts])
 
   const clearFilters = () => {
-    setSearch("");
-    setCategory("");
-    setMinPrice("");
-    setMaxPrice("");
-    setFeatured("");
-    setSort("-createdAt");
-    router.push("/products");
-  };
+    setSearch("")
+    setCategory("")
+    setMinPrice("")
+    setMaxPrice("")
+    setFeatured("")
+    setSort("-createdAt")
+    router.push("/products")
+  }
 
-  const hasFilters = search || category || minPrice || maxPrice || featured;
+  const hasFilters = search || category || minPrice || maxPrice || featured
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -115,9 +119,9 @@ export default function ProductsPage() {
         <aside
           className={`${
             filtersOpen ? "block" : "hidden"
-          } lg:block w-56 flex-shrink-0`}
+          } w-56 flex-shrink-0 lg:block`}
         >
-          <div className="sticky top-20 rounded-xl border border-border bg-card p-5 space-y-6">
+          <div className="sticky top-20 space-y-6 rounded-xl border border-border bg-card p-5">
             {hasFilters && (
               <button
                 onClick={clearFilters}
@@ -129,14 +133,14 @@ export default function ProductsPage() {
 
             {/* Category */}
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="mb-2 text-xs font-bold tracking-widest text-muted-foreground uppercase">
                 Category
               </p>
               <div className="space-y-1">
                 <button
                   className={`block w-full rounded-lg px-3 py-1.5 text-left text-sm transition-colors ${
                     !category
-                      ? "bg-primary text-primary-foreground font-semibold"
+                      ? "bg-primary font-semibold text-primary-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground"
                   }`}
                   onClick={() => setCategory("")}
@@ -148,7 +152,7 @@ export default function ProductsPage() {
                     key={cat}
                     className={`block w-full rounded-lg px-3 py-1.5 text-left text-sm transition-colors ${
                       category === cat
-                        ? "bg-primary text-primary-foreground font-semibold"
+                        ? "bg-primary font-semibold text-primary-foreground"
                         : "text-muted-foreground hover:bg-accent hover:text-foreground"
                     }`}
                     onClick={() => setCategory(cat === category ? "" : cat)}
@@ -161,7 +165,7 @@ export default function ProductsPage() {
 
             {/* Price range */}
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="mb-2 text-xs font-bold tracking-widest text-muted-foreground uppercase">
                 Price (£)
               </p>
               <div className="flex gap-2">
@@ -189,9 +193,7 @@ export default function ProductsPage() {
                   type="checkbox"
                   className="accent-primary"
                   checked={featured === "true"}
-                  onChange={(e) =>
-                    setFeatured(e.target.checked ? "true" : "")
-                  }
+                  onChange={(e) => setFeatured(e.target.checked ? "true" : "")}
                 />
                 <span className="text-sm font-medium">Best Sellers only</span>
               </label>
@@ -200,17 +202,17 @@ export default function ProductsPage() {
         </aside>
 
         {/* ── Main content ─────────────────────────────────────────────────── */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           {/* Search + Sort bar */}
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search products…"
-                className="w-full rounded-lg border border-border bg-card py-2.5 pl-9 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                className="w-full rounded-lg border border-border bg-card py-2.5 pr-4 pl-9 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <select
@@ -288,5 +290,5 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
