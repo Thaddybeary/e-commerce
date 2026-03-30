@@ -1,33 +1,34 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Loader2, CheckCircle, Lock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/cart-context";
-import { useAuth } from "@/context/auth-context";
-import { cartAPI, ordersAPI, type ShippingAddress } from "@/lib/api";
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { Loader2, CheckCircle, Lock } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useCart } from "@/context/cart-context"
+import { useAuth } from "@/context/auth-context"
+import { cartAPI, ordersAPI, type ShippingAddress } from "@/lib/api"
 
-type PaymentMethod = "card" | "paypal" | "cash_on_delivery";
+type PaymentMethod = "card" | "paypal" | "cash_on_delivery"
 
-const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; icon: string }[] = [
-  { value: "card", label: "Credit / Debit Card", icon: "💳" },
-  { value: "paypal", label: "PayPal", icon: "🅿️" },
-  { value: "cash_on_delivery", label: "Cash on Delivery", icon: "💵" },
-];
+const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; icon: string }[] =
+  [
+    { value: "card", label: "Credit / Debit Card", icon: "💳" },
+    { value: "paypal", label: "PayPal", icon: "🅿️" },
+    { value: "cash_on_delivery", label: "Cash on Delivery", icon: "💵" },
+  ]
 
 export default function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const router = useRouter();
+  const { items, totalPrice, clearCart } = useCart()
+  const { isAuthenticated, isLoading: authLoading } = useAuth()
+  const router = useRouter()
 
   const [step, setStep] = useState<"shipping" | "payment" | "success">(
     "shipping"
-  );
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [orderNumber, setOrderNumber] = useState("");
+  )
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
+  const [orderNumber, setOrderNumber] = useState("")
 
   const [address, setAddress] = useState<ShippingAddress>({
     fullName: "",
@@ -37,70 +38,70 @@ export default function CheckoutPage() {
     postalCode: "",
     country: "United Kingdom",
     phone: "",
-  });
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  })
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
 
-  const shipping = totalPrice >= 50 ? 0 : 4.99;
-  const tax = Math.round(totalPrice * 0.2 * 100) / 100;
-  const orderTotal = Math.round((totalPrice + shipping + tax) * 100) / 100;
+  const shipping = totalPrice >= 50 ? 0 : 4.99
+  const tax = Math.round(totalPrice * 0.2 * 100) / 100
+  const orderTotal = Math.round((totalPrice + shipping + tax) * 100) / 100
 
   // Redirect if not authenticated or cart empty
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/auth/login");
+      router.push("/auth/login")
     }
     if (!authLoading && items.length === 0 && step !== "success") {
-      router.push("/cart");
+      router.push("/cart")
     }
-  }, [authLoading, isAuthenticated, items.length, router, step]);
+  }, [authLoading, isAuthenticated, items.length, router, step])
 
   const handleAddressSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep("payment");
-  };
+    e.preventDefault()
+    setStep("payment")
+  }
 
   const handlePlaceOrder = async () => {
-    setSubmitting(true);
-    setError("");
+    setSubmitting(true)
+    setError("")
     try {
       // Sync local cart to backend cart
-      await cartAPI.clear().catch(() => {});
+      await cartAPI.clear().catch(() => {})
       for (const item of items) {
-        await cartAPI.addItem(item.productId, item.quantity);
+        await cartAPI.addItem(item.productId, item.quantity)
       }
 
       // Create order
       const res = await ordersAPI.create({
         shippingAddress: address,
         paymentMethod,
-      });
+      })
 
-      setOrderNumber(res.data.orderNumber);
-      clearCart();
-      setStep("success");
+      setOrderNumber(res.data.orderNumber)
+      clearCart()
+      setStep("success")
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : "Failed to place order. Please try again."
-      );
+        err instanceof Error
+          ? err.message
+          : "Failed to place order. Please try again."
+      )
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   if (step === "success") {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-500/15 mb-4">
+        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/15">
           <CheckCircle className="h-10 w-10 text-green-400" />
         </div>
         <h1 className="text-3xl font-black tracking-tight">Order Placed!</h1>
-        <p className="mt-2 text-muted-foreground">
-          Thank you for your order.
-        </p>
+        <p className="mt-2 text-muted-foreground">Thank you for your order.</p>
         {orderNumber && (
           <p className="mt-1 font-mono text-sm text-primary">{orderNumber}</p>
         )}
-        <p className="mt-3 text-sm text-muted-foreground max-w-sm">
+        <p className="mt-3 max-w-sm text-sm text-muted-foreground">
           We&apos;ll send you a confirmation email shortly. Your supplements
           will be dispatched soon!
         </p>
@@ -113,7 +114,7 @@ export default function CheckoutPage() {
           </Button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -141,7 +142,7 @@ export default function CheckoutPage() {
           {step === "shipping" && (
             <form
               onSubmit={handleAddressSubmit}
-              className="rounded-xl border border-border bg-card p-6 space-y-5"
+              className="space-y-5 rounded-xl border border-border bg-card p-6"
             >
               <h2 className="text-lg font-bold">Shipping Address</h2>
 
@@ -205,7 +206,7 @@ export default function CheckoutPage() {
           )}
 
           {step === "payment" && (
-            <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+            <div className="space-y-5 rounded-xl border border-border bg-card p-6">
               <h2 className="text-lg font-bold">Payment Method</h2>
 
               {error && (
@@ -273,9 +274,9 @@ export default function CheckoutPage() {
 
         {/* ── Right: Order summary ────────────────────────────────────────── */}
         <div>
-          <div className="sticky top-20 rounded-xl border border-border bg-card p-5 space-y-4">
+          <div className="sticky top-20 space-y-4 rounded-xl border border-border bg-card p-5">
             <h2 className="font-bold">Your Order</h2>
-            <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+            <div className="max-h-64 space-y-3 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.productId} className="flex items-center gap-3">
                   <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
@@ -334,7 +335,7 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function Field({
@@ -344,11 +345,11 @@ function Field({
   placeholder,
   required,
 }: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  required?: boolean;
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  required?: boolean
 }) {
   return (
     <div className="space-y-1.5">
@@ -362,5 +363,5 @@ function Field({
         className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
       />
     </div>
-  );
+  )
 }

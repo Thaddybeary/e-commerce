@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2, Package, ChevronRight, User, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/auth-context";
-import { ordersAPI, type Order } from "@/lib/api";
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { Loader2, Package, ChevronRight, User, LogOut } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/context/auth-context"
+import { ordersAPI, type Order } from "@/lib/api"
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-500/15 text-yellow-400",
@@ -13,29 +13,29 @@ const STATUS_COLORS: Record<string, string> = {
   shipped: "bg-purple-500/15 text-purple-400",
   delivered: "bg-green-500/15 text-green-400",
   cancelled: "bg-red-500/15 text-red-400",
-};
+}
 
 const PAYMENT_COLORS: Record<string, string> = {
   pending: "text-yellow-400",
   paid: "text-green-400",
   failed: "text-destructive",
   refunded: "text-muted-foreground",
-};
+}
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
-  const router = useRouter();
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth()
+  const router = useRouter()
 
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([])
+  const [ordersLoading, setOrdersLoading] = useState(true)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/auth/login");
+      router.push("/auth/login")
     }
-  }, [authLoading, isAuthenticated, router]);
+  }, [authLoading, isAuthenticated, router])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -43,39 +43,37 @@ export default function ProfilePage() {
         .getMyOrders()
         .then((res) => setOrders(res.data.orders))
         .catch(() => setOrders([]))
-        .finally(() => setOrdersLoading(false));
+        .finally(() => setOrdersLoading(false))
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated])
 
   const handleCancel = async (orderId: string) => {
-    setCancellingId(orderId);
+    setCancellingId(orderId)
     try {
-      await ordersAPI.cancel(orderId, "Cancelled by customer");
+      await ordersAPI.cancel(orderId, "Cancelled by customer")
       setOrders((prev) =>
-        prev.map((o) =>
-          o._id === orderId ? { ...o, status: "cancelled" } : o
-        )
-      );
+        prev.map((o) => (o._id === orderId ? { ...o, status: "cancelled" } : o))
+      )
       if (selectedOrder?._id === orderId) {
         setSelectedOrder((prev) =>
           prev ? { ...prev, status: "cancelled" } : null
-        );
+        )
       }
     } catch {}
-    setCancellingId(null);
-  };
+    setCancellingId(null)
+  }
 
   const handleLogout = async () => {
-    await logout();
-    router.push("/");
-  };
+    await logout()
+    router.push("/")
+  }
 
   if (authLoading) {
     return (
       <div className="flex min-h-96 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    )
   }
 
   return (
@@ -85,7 +83,7 @@ export default function ProfilePage() {
       <div className="grid gap-8 lg:grid-cols-3">
         {/* ── Sidebar ──────────────────────────────────────────────────────── */}
         <aside>
-          <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+          <div className="space-y-4 rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15">
                 <User className="h-6 w-6 text-primary" />
@@ -97,16 +95,14 @@ export default function ProfilePage() {
             </div>
             <hr className="border-border" />
             <div className="space-y-1">
-              <button
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium bg-primary/10 text-primary"
-              >
+              <button className="flex w-full items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
                 <Package className="h-4 w-4" /> My Orders
               </button>
             </div>
             <hr className="border-border" />
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-destructive transition-colors"
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-destructive"
             >
               <LogOut className="h-4 w-4" /> Sign Out
             </button>
@@ -117,7 +113,7 @@ export default function ProfilePage() {
         <div className="lg:col-span-2">
           {selectedOrder ? (
             /* Order detail */
-            <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+            <div className="space-y-5 rounded-xl border border-border bg-card p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-bold">Order Detail</h2>
@@ -155,12 +151,12 @@ export default function ProfilePage() {
                     className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
                   >
                     <div>
-                      <p className="font-medium text-sm">{item.name}</p>
+                      <p className="text-sm font-medium">{item.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {item.brand} · ×{item.quantity}
                       </p>
                     </div>
-                    <p className="font-semibold text-sm">
+                    <p className="text-sm font-semibold">
                       £{item.subtotal.toFixed(2)}
                     </p>
                   </div>
@@ -168,7 +164,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Totals */}
-              <div className="rounded-lg bg-secondary p-4 space-y-2 text-sm">
+              <div className="space-y-2 rounded-lg bg-secondary p-4 text-sm">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal</span>
                   <span>£{selectedOrder.subtotal.toFixed(2)}</span>
@@ -197,7 +193,7 @@ export default function ProfilePage() {
               {/* Shipping address */}
               <div>
                 <h3 className="mb-2 text-sm font-semibold">Shipping To</h3>
-                <div className="text-sm text-muted-foreground space-y-0.5">
+                <div className="space-y-0.5 text-sm text-muted-foreground">
                   <p>{selectedOrder.shippingAddress.fullName}</p>
                   <p>{selectedOrder.shippingAddress.street}</p>
                   <p>
@@ -301,5 +297,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Image from "next/image"
+import Link from "next/link"
 import {
   ShoppingCart,
   ChevronLeft,
@@ -11,45 +11,45 @@ import {
   Minus,
   Loader2,
   Star,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { StarRating } from "@/components/star-rating";
-import { useCart } from "@/context/cart-context";
-import { useAuth } from "@/context/auth-context";
-import { productsAPI, type Product } from "@/lib/api";
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { StarRating } from "@/components/star-rating"
+import { useCart } from "@/context/cart-context"
+import { useAuth } from "@/context/auth-context"
+import { productsAPI, type Product } from "@/lib/api"
 
 export default function ProductDetailPage() {
-  const { id } = useParams() as { id: string };
-  const router = useRouter();
-  const { addItem, items } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { id } = useParams() as { id: string }
+  const router = useRouter()
+  const { addItem, items } = useCart()
+  const { isAuthenticated } = useAuth()
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [qty, setQty] = useState(1);
-  const [activeImage, setActiveImage] = useState(0);
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [qty, setQty] = useState(1)
+  const [activeImage, setActiveImage] = useState(0)
   const [activeTab, setActiveTab] = useState<"description" | "reviews">(
     "description"
-  );
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewComment, setReviewComment] = useState("");
-  const [submittingReview, setSubmittingReview] = useState(false);
-  const [reviewError, setReviewError] = useState("");
-  const [addedFeedback, setAddedFeedback] = useState(false);
+  )
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewComment, setReviewComment] = useState("")
+  const [submittingReview, setSubmittingReview] = useState(false)
+  const [reviewError, setReviewError] = useState("")
+  const [addedFeedback, setAddedFeedback] = useState(false)
 
   useEffect(() => {
     productsAPI
       .getById(id)
       .then((res) => setProduct(res.data))
       .catch(() => router.push("/products"))
-      .finally(() => setLoading(false));
-  }, [id, router]);
+      .finally(() => setLoading(false))
+  }, [id, router])
 
-  const cartItem = items.find((i) => i.productId === id);
-  const cartQty = cartItem?.quantity ?? 0;
+  const cartItem = items.find((i) => i.productId === id)
+  const cartQty = cartItem?.quantity ?? 0
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product) return
     addItem({
       productId: product._id,
       name: product.name,
@@ -58,46 +58,46 @@ export default function ProductDetailPage() {
       image: product.images?.[0] ?? null,
       stock: product.stock,
       quantity: qty,
-    });
-    setAddedFeedback(true);
-    setTimeout(() => setAddedFeedback(false), 2000);
-  };
+    })
+    setAddedFeedback(true)
+    setTimeout(() => setAddedFeedback(false), 2000)
+  }
 
   const handleSubmitReview = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!isAuthenticated) {
-      router.push("/auth/login");
-      return;
+      router.push("/auth/login")
+      return
     }
-    setSubmittingReview(true);
-    setReviewError("");
+    setSubmittingReview(true)
+    setReviewError("")
     try {
       await productsAPI.addReview(id, {
         rating: reviewRating,
         comment: reviewComment,
-      });
-      const res = await productsAPI.getById(id);
-      setProduct(res.data);
-      setReviewComment("");
-      setReviewRating(5);
+      })
+      const res = await productsAPI.getById(id)
+      setProduct(res.data)
+      setReviewComment("")
+      setReviewRating(5)
     } catch (err: unknown) {
       setReviewError(
         err instanceof Error ? err.message : "Failed to submit review"
-      );
+      )
     } finally {
-      setSubmittingReview(false);
+      setSubmittingReview(false)
     }
-  };
+  }
 
   if (loading) {
     return (
       <div className="flex min-h-96 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    )
   }
 
-  if (!product) return null;
+  if (!product) return null
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -150,15 +150,21 @@ export default function ProductDetailPage() {
         {/* Info */}
         <div className="flex flex-col gap-5">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wider text-primary">
+            <p className="text-sm font-bold tracking-wider text-primary uppercase">
               {product.brand}
             </p>
-            <h1 className="mt-1 text-3xl font-black tracking-tight leading-tight">
+            <h1 className="mt-1 text-3xl leading-tight font-black tracking-tight">
               {product.name}
             </h1>
             {(product.flavour || product.weight) && (
               <p className="mt-1 text-sm text-muted-foreground">
-                {[product.flavour, product.weight, product.servings ? `${product.servings} servings` : ""].filter(Boolean).join(" · ")}
+                {[
+                  product.flavour,
+                  product.weight,
+                  product.servings ? `${product.servings} servings` : "",
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
               </p>
             )}
           </div>
@@ -250,7 +256,7 @@ export default function ProductDetailPage() {
           )}
 
           {/* Perks */}
-          <div className="rounded-xl border border-border bg-card p-4 space-y-2 text-sm text-muted-foreground">
+          <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
             <p>🚚 Free shipping on orders over £50</p>
             <p>🔄 30-day hassle-free returns</p>
             <p>✅ Authenticity guaranteed</p>
@@ -314,8 +320,7 @@ export default function ProductDetailPage() {
                             onClick={() => setReviewRating(n)}
                             className="text-2xl transition-transform hover:scale-110"
                             style={{
-                              color:
-                                n <= reviewRating ? "#f97316" : "#3a3a3a",
+                              color: n <= reviewRating ? "#f97316" : "#3a3a3a",
                             }}
                           >
                             <Star
@@ -331,13 +336,9 @@ export default function ProductDetailPage() {
                       onChange={(e) => setReviewComment(e.target.value)}
                       placeholder="Share your experience with this product…"
                       rows={3}
-                      className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary resize-none"
+                      className="w-full resize-none rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary"
                     />
-                    <Button
-                      type="submit"
-                      size="sm"
-                      disabled={submittingReview}
-                    >
+                    <Button type="submit" size="sm" disabled={submittingReview}>
                       {submittingReview ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
@@ -361,15 +362,19 @@ export default function ProductDetailPage() {
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-semibold text-sm">{r.username}</p>
-                        <StarRating rating={r.rating} size="sm" className="mt-0.5" />
+                        <p className="text-sm font-semibold">{r.username}</p>
+                        <StarRating
+                          rating={r.rating}
+                          size="sm"
+                          className="mt-0.5"
+                        />
                       </div>
                       <span className="text-xs text-muted-foreground">
                         {new Date(r.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     {r.comment && (
-                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                         {r.comment}
                       </p>
                     )}
@@ -381,5 +386,5 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

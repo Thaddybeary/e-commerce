@@ -1,18 +1,24 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/cart-context";
+import Image from "next/image"
+import Link from "next/link"
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useCart } from "@/context/cart-context"
 
 export default function CartPage() {
-  const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart } =
-    useCart();
+  const {
+    items,
+    totalItems,
+    totalPrice,
+    updateQuantity,
+    removeItem,
+    clearCart,
+  } = useCart()
 
-  const shipping = totalPrice >= 50 ? 0 : 4.99;
-  const tax = Math.round(totalPrice * 0.2 * 100) / 100;
-  const orderTotal = Math.round((totalPrice + shipping + tax) * 100) / 100;
+  const shipping = totalPrice >= 50 ? 0 : 4.99
+  const tax = Math.round(totalPrice * 0.2 * 100) / 100
+  const orderTotal = Math.round((totalPrice + shipping + tax) * 100) / 100
 
   if (items.length === 0) {
     return (
@@ -30,7 +36,7 @@ export default function CartPage() {
           </Button>
         </Link>
       </div>
-    );
+    )
   }
 
   return (
@@ -75,22 +81,22 @@ export default function CartPage() {
               </Link>
 
               {/* Details */}
-              <div className="flex flex-1 min-w-0 flex-col justify-between">
+              <div className="flex min-w-0 flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                    <p className="text-xs font-semibold tracking-wider text-primary uppercase">
                       {item.brand}
                     </p>
                     <Link
                       href={`/products/${item.productId}`}
-                      className="mt-0.5 block font-semibold leading-tight hover:text-primary truncate"
+                      className="mt-0.5 block truncate leading-tight font-semibold hover:text-primary"
                     >
                       {item.name}
                     </Link>
                   </div>
                   <button
                     onClick={() => removeItem(item.productId)}
-                    className="flex-shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                    className="flex-shrink-0 text-muted-foreground transition-colors hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -132,7 +138,7 @@ export default function CartPage() {
 
         {/* ── Order summary ───────────────────────────────────────────────── */}
         <div>
-          <div className="sticky top-20 rounded-xl border border-border bg-card p-6 space-y-4">
+          <div className="sticky top-20 space-y-4 rounded-xl border border-border bg-card p-6">
             <h2 className="text-lg font-black tracking-tight">Order Summary</h2>
 
             <div className="space-y-3 text-sm">
@@ -186,5 +192,5 @@ export default function CartPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

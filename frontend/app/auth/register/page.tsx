@@ -1,45 +1,47 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Dumbbell, Eye, EyeOff, Loader2, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/auth-context";
+import { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Dumbbell, Eye, EyeOff, Loader2, CheckCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/context/auth-context"
 
 const passwordRules = [
   { label: "At least 6 characters", test: (p: string) => p.length >= 6 },
   { label: "One uppercase letter", test: (p: string) => /[A-Z]/.test(p) },
   { label: "One lowercase letter", test: (p: string) => /[a-z]/.test(p) },
   { label: "One number", test: (p: string) => /\d/.test(p) },
-];
+]
 
 export default function RegisterPage() {
-  const { register } = useAuth();
-  const router = useRouter();
+  const { register } = useAuth()
+  const router = useRouter()
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPass, setShowPass] = useState(false)
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
     try {
-      await register(name, email, password);
-      router.push("/");
+      await register(name, email, password)
+      router.push("/")
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : "Registration failed. Please try again."
-      );
+        err instanceof Error
+          ? err.message
+          : "Registration failed. Please try again."
+      )
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
@@ -75,7 +77,7 @@ export default function RegisterPage() {
                 minLength={2}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 placeholder="John Smith"
               />
             </div>
@@ -90,7 +92,7 @@ export default function RegisterPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 placeholder="you@example.com"
               />
             </div>
@@ -105,15 +107,19 @@ export default function RegisterPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 pr-10 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 pr-10 text-sm text-foreground placeholder-muted-foreground transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPass((v) => !v)}
                 >
-                  {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPass ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
 
@@ -155,11 +161,11 @@ export default function RegisterPage() {
 
             <p className="text-center text-xs text-muted-foreground">
               By signing up, you agree to our{" "}
-              <span className="text-primary hover:underline cursor-pointer">
+              <span className="cursor-pointer text-primary hover:underline">
                 Terms
               </span>{" "}
               and{" "}
-              <span className="text-primary hover:underline cursor-pointer">
+              <span className="cursor-pointer text-primary hover:underline">
                 Privacy Policy
               </span>
               .
@@ -178,5 +184,5 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
