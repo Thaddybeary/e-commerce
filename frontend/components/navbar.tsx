@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import {
   Dumbbell,
   ShoppingCart,
@@ -12,10 +12,10 @@ import {
   ChevronDown,
   LogOut,
   Package,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/auth-context";
-import { useCart } from "@/context/cart-context";
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/context/auth-context"
+import { useCart } from "@/context/cart-context"
 
 const categories = [
   "Protein Powder",
@@ -26,27 +26,27 @@ const categories = [
   "Fat Burners",
   "Amino Acids",
   "Bars & Snacks",
-];
+]
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { totalItems } = useCart();
-  const router = useRouter();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth()
+  const { totalItems } = useCart()
+  const router = useRouter()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [catOpen, setCatOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
 
   const handleLogout = async () => {
-    await logout();
-    setProfileOpen(false);
-    router.push("/");
-  };
+    await logout()
+    setProfileOpen(false)
+    router.push("/")
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+        <Link href="/" className="flex flex-shrink-0 items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <Dumbbell className="h-4 w-4 text-primary-foreground" />
           </div>
@@ -75,7 +75,7 @@ export default function Navbar() {
             </button>
             {catOpen && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 rounded-xl border border-border bg-popover p-2 shadow-xl"
+                className="absolute top-full left-1/2 mt-2 w-52 -translate-x-1/2 rounded-xl border border-border bg-popover p-2 shadow-xl"
                 onMouseEnter={() => setCatOpen(true)}
                 onMouseLeave={() => setCatOpen(false)}
               >
@@ -123,12 +123,12 @@ export default function Navbar() {
                 onClick={() => setProfileOpen((v) => !v)}
               >
                 <User className="h-4 w-4 text-primary" />
-                <span className="hidden sm:inline max-w-24 truncate">
+                <span className="hidden max-w-24 truncate sm:inline">
                   {user?.name}
                 </span>
               </button>
               {profileOpen && (
-                <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-border bg-popover p-1.5 shadow-xl">
+                <div className="absolute top-full right-0 mt-2 w-44 rounded-xl border border-border bg-popover p-1.5 shadow-xl">
                   <Link
                     href="/profile"
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -149,7 +149,9 @@ export default function Navbar() {
           ) : (
             <div className="hidden items-center gap-2 sm:flex">
               <Link href="/auth/login">
-                <Button variant="ghost" size="sm">Login</Button>
+                <Button variant="ghost" size="sm">
+                  Login
+                </Button>
               </Link>
               <Link href="/auth/register">
                 <Button size="sm">Sign Up</Button>
@@ -162,7 +164,11 @@ export default function Navbar() {
             className="md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </nav>
@@ -178,7 +184,7 @@ export default function Navbar() {
             >
               Shop All
             </Link>
-            <p className="px-3 pt-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <p className="px-3 pt-2 text-xs font-bold tracking-widest text-muted-foreground uppercase">
               Categories
             </p>
             {categories.map((cat) => (
@@ -193,10 +199,20 @@ export default function Navbar() {
             ))}
             {!isAuthenticated && (
               <div className="mt-4 flex gap-2 border-t border-border pt-4">
-                <Link href="/auth/login" className="flex-1" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" className="w-full">Login</Button>
+                <Link
+                  href="/auth/login"
+                  className="flex-1"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <Button variant="ghost" className="w-full">
+                    Login
+                  </Button>
                 </Link>
-                <Link href="/auth/register" className="flex-1" onClick={() => setMobileOpen(false)}>
+                <Link
+                  href="/auth/register"
+                  className="flex-1"
+                  onClick={() => setMobileOpen(false)}
+                >
                   <Button className="w-full">Sign Up</Button>
                 </Link>
               </div>
@@ -205,5 +221,5 @@ export default function Navbar() {
         </div>
       )}
     </header>
-  );
+  )
 }

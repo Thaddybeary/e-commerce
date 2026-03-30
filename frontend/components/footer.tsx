@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Dumbbell } from "lucide-react";
+import Link from "next/link"
+import { Dumbbell } from "lucide-react"
 
 const links = {
   Shop: [
@@ -20,7 +20,7 @@ const links = {
     { label: "Returns", href: "#" },
     { label: "Contact", href: "#" },
   ],
-};
+}
 
 export function Footer() {
   return (
@@ -37,7 +37,7 @@ export function Footer() {
                 IRON<span className="text-primary">FUEL</span>
               </span>
             </Link>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Premium supplements for serious athletes. Fuel your gains with
               science-backed nutrition.
             </p>
@@ -49,7 +49,7 @@ export function Footer() {
           {/* Links */}
           {Object.entries(links).map(([section, items]) => (
             <div key={section}>
-              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-foreground">
+              <h3 className="mb-3 text-xs font-bold tracking-widest text-foreground uppercase">
                 {section}
               </h3>
               <ul className="space-y-2">
@@ -78,5 +78,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

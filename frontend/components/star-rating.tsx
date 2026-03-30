@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 interface StarRatingProps {
-  rating: number;
-  max?: number;
-  size?: "sm" | "md" | "lg";
-  showValue?: boolean;
-  count?: number;
-  className?: string;
+  rating: number
+  max?: number
+  size?: "sm" | "md" | "lg"
+  showValue?: boolean
+  count?: number
+  className?: string
 }
 
 export function StarRating({
@@ -17,14 +17,14 @@ export function StarRating({
   count,
   className,
 }: StarRatingProps) {
-  const sizes = { sm: "text-xs", md: "text-sm", lg: "text-base" };
+  const sizes = { sm: "text-xs", md: "text-sm", lg: "text-base" }
 
   return (
     <div className={cn("flex items-center gap-1", className)}>
       <div className="flex">
         {Array.from({ length: max }).map((_, i) => {
-          const filled = i < Math.floor(rating);
-          const partial = !filled && i < rating;
+          const filled = i < Math.floor(rating)
+          const partial = !filled && i < rating
           return (
             <span
               key={i}
@@ -45,17 +45,15 @@ export function StarRating({
                 "★"
               )}
             </span>
-          );
+          )
         })}
       </div>
       {showValue && (
         <span className={cn(sizes[size], "text-muted-foreground")}>
           {rating.toFixed(1)}
-          {count !== undefined && (
-            <span className="ml-1">({count})</span>
-          )}
+          {count !== undefined && <span className="ml-1">({count})</span>}
         </span>
       )}
     </div>
-  );
+  )
 }

@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { StarRating } from "@/components/star-rating";
-import { useCart } from "@/context/cart-context";
-import { cn } from "@/lib/utils";
-import type { Product } from "@/lib/api";
+import Link from "next/link"
+import Image from "next/image"
+import { ShoppingCart } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { StarRating } from "@/components/star-rating"
+import { useCart } from "@/context/cart-context"
+import { cn } from "@/lib/utils"
+import type { Product } from "@/lib/api"
 
 interface ProductCardProps {
-  product: Product;
-  className?: string;
+  product: Product
+  className?: string
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
-  const { addItem, items } = useCart();
+  const { addItem, items } = useCart()
 
-  const inCart = items.some((i) => i.productId === product._id);
+  const inCart = items.some((i) => i.productId === product._id)
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     addItem({
       productId: product._id,
       name: product.name,
@@ -28,14 +28,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
       price: product.price,
       image: product.images?.[0] ?? null,
       stock: product.stock,
-    });
-  };
+    })
+  }
 
   return (
     <Link href={`/products/${product._id}`}>
       <div
         className={cn(
-          "group relative flex flex-col rounded-xl border border-border bg-card overflow-hidden card-hover",
+          "group card-hover relative flex flex-col overflow-hidden rounded-xl border border-border bg-card",
           className
         )}
       >
@@ -72,10 +72,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <div className="flex flex-1 flex-col gap-2 p-4">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-xs font-medium uppercase tracking-wider text-primary">
+              <p className="text-xs font-medium tracking-wider text-primary uppercase">
                 {product.brand}
               </p>
-              <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-tight text-foreground">
+              <h3 className="mt-0.5 line-clamp-2 text-sm leading-tight font-semibold text-foreground">
                 {product.name}
               </h3>
             </div>
@@ -114,5 +114,5 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </div>
       </div>
     </Link>
-  );
+  )
 }
