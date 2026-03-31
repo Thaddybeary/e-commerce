@@ -94,7 +94,7 @@ export default function HomePage() {
         {/* Decorative glow */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-32 right-0 h-[600px] w-[600px] rounded-full opacity-10"
+          className="pointer-events-none absolute -top-32 right-0 h-150 w-150 rounded-full opacity-10"
           style={{
             background:
               "radial-gradient(circle, oklch(0.702 0.193 47.5) 0%, transparent 70%)",
@@ -108,7 +108,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 divide-x divide-border lg:grid-cols-4">
             {perks.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-center gap-3 px-6 py-5">
-                <Icon className="h-6 w-6 flex-shrink-0 text-primary" />
+                <Icon className="h-6 w-6 shrink-0 text-primary" />
                 <div>
                   <p className="text-sm font-semibold">{title}</p>
                   <p className="text-xs text-muted-foreground">{desc}</p>
@@ -141,7 +141,7 @@ export default function HomePage() {
             <Link
               key={cat.name}
               href={`/products?category=${encodeURIComponent(cat.name)}`}
-              className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${cat.color} border border-border p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10`}
+              className={`group relative overflow-hidden rounded-2xl bg-linear-to-br ${cat.color} border border-border p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10`}
             >
               <span className="mb-3 block text-4xl">{cat.emoji}</span>
               <h3 className="font-bold text-foreground">{cat.name}</h3>
